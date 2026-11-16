@@ -14,10 +14,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        if #available(macOS 14, *) { NSApp.activate() } else { NSApp.activate(ignoringOtherApps: true) }
-        #if DEBUG
-        DebugSnapshot.runIfRequested()
-        #endif
+        // Force-activate: macOS 14's cooperative NSApp.activate() leaves the window
+        // behind other apps when launched from VS Code / Terminal (e.g. the debugger).
+        NSApp.activate(ignoringOtherApps: true)
+
+        // When launched directly (debugger / Terminal) instead of via Finder or `open`,
+        // AppKit never gets the "open application" event, so no Untitled window is made.
+        DispatchQueue.main.async {
+            let controller = NSDocumentController.shared
+            if controller.documents.isEmpty {
+                _ = try? controller.openUntitledDocumentAndDisplay(true)
+            }
+            for window in NSApp.windows where window.isVisible { window.orderFrontRegardless() }
+            #if DEBUG
+            DebugSnapshot.runIfRequested()
+            #endif
+        }
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
@@ -28,6 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
     @objc func toggleInvisibles(_ sender: Any?) { Settings.showInvisibles.toggle() }
     @objc func toggleLineNumbers(_ sender: Any?) { Settings.showLineNumbers.toggle() }
     @objc func toggleStatusBar(_ sender: Any?) { Settings.showStatusBar.toggle() }
+    @objc func setColumnGuide(_ sender: NSMenuItem) { Settings.columnGuide = sender.tag }
     @objc func zoomIn(_ sender: Any?) { Settings.fontSize += 1 }
     @objc func zoomOut(_ sender: Any?) { Settings.fontSize -= 1 }
     @objc func zoomReset(_ sender: Any?) { Settings.fontSize = Settings.defaultFontSize }
@@ -50,6 +63,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
         case #selector(toggleInvisibles(_:)): item.state = Settings.showInvisibles ? .on : .off
         case #selector(toggleLineNumbers(_:)): item.state = Settings.showLineNumbers ? .on : .off
         case #selector(toggleStatusBar(_:)): item.state = Settings.showStatusBar ? .on : .off
+        case #selector(setColumnGuide(_:)): item.state = Settings.columnGuide == item.tag ? .on : .off
         default: break
         }
         return true
@@ -132,21 +146,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation {
             item("Word Wrap", #selector(toggleWordWrap(_:)), target: self),
             item("Font…", #selector(showFontPanel(_:)), "t", target: self),
             sep(),
-            sub("Line Endings", LineEnding.allCases.map {
-                item($0.menuTitle, #selector(EditorWindowController.changeLineEnding(_:)), rep: $0.rawValue)
-            }),
-            sub("Encoding", TextEncoding.allCases.map {
-                item($0.menuTitle, #selector(EditorWindowController.changeEncoding(_:)), rep: $0.rawValue)
-            }),
-            sub("Syntax", Language.allCases.map {
-                item($0.displayName, #selector(EditorWindowController.changeLanguage(_:)), rep: $0.rawValue)
-            }),
+            sub("Line Endings", FormatMenus.lineEndingItems(target: nil)),
+            sub("Encoding", FormatMenus.encodingItems(target: nil)),
+            sub("Syntax", FormatMenus.languageItems(target: nil)),
         ])
 
         _ = add("View", [
             item("Line Numbers", #selector(toggleLineNumbers(_:)), target: self),
             item("Status Bar", #selector(toggleStatusBar(_:)), target: self),
             item("Show Whitespace & Line Endings", #selector(toggleInvisibles(_:)), "i", [.command, .option], target: self),
+            sub("Column Guide", [item("Off", #selector(setColumnGuide(_:)), tag: 0, target: self), sep()]
+                + Settings.columnGuideChoices.map {
+                    item("\($0) Columns", #selector(setColumnGuide(_:)), tag: $0, target: self)
+                }),
             sep(),
             item("Zoom In", #selector(zoomIn(_:)), "=", target: self),
             item("Zoom Out", #selector(zoomOut(_:)), "-", target: self),

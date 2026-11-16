@@ -29,6 +29,9 @@ enum Theme {
     /// Whitespace dots, tab arrows and line-ending markers.
     static let invisibles = dynamic(T.alu2, 0x4B5356)
 
+    /// Vertical column-guide line (e.g. at 80).
+    static let columnGuide = dynamic(0xE4E5E1, 0x3E4649)
+
     // Syntax
     static let comment   = dynamic(T.alu4, T.alu4)
     static let string    = dynamic(T.green3, T.green1)

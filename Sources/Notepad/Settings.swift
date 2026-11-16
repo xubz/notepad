@@ -15,6 +15,7 @@ enum Settings {
         static let showInvisibles = "showInvisibles"
         static let showLineNumbers = "showLineNumbers"
         static let showStatusBar = "showStatusBar"
+        static let columnGuide = "columnGuide"
     }
 
     static let defaultFontSize: CGFloat = 13
@@ -26,6 +27,7 @@ enum Settings {
             Key.showInvisibles: true,
             Key.showLineNumbers: true,
             Key.showStatusBar: true,
+            Key.columnGuide: 0,
         ])
     }
 
@@ -76,6 +78,14 @@ enum Settings {
         get { defaults.bool(forKey: Key.showStatusBar) }
         set { defaults.set(newValue, forKey: Key.showStatusBar); post() }
     }
+
+    /// Column for the vertical guide line; 0 = off.
+    static var columnGuide: Int {
+        get { max(0, defaults.integer(forKey: Key.columnGuide)) }
+        set { defaults.set(max(0, newValue), forKey: Key.columnGuide); post() }
+    }
+
+    static let columnGuideChoices = [72, 80, 100, 120]
 
     private static func clampSize(_ s: CGFloat) -> CGFloat { min(96, max(6, s == 0 ? defaultFontSize : s)) }
 

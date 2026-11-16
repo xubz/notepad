@@ -5,21 +5,32 @@
       "name": "Debug Notepad",
       "type": "swift",
       "request": "launch",
-      "program": "${workspaceFolder}/.build/debug/Notepad",
-      "cwd": "${workspaceFolder}",
-      "preLaunchTask": "Build (debug)"
+      "target": "Notepad",
+      "configuration": "debug",
+      "args": [],
+      "cwd": "${workspaceFolder:notepad}",
+      "preLaunchTask": "swift: Build Debug Notepad"
     },
     {
-      "name": "Debug Notepad (open a file)",
+      "name": "Debug Notepad (open current file)",
       "type": "swift",
       "request": "launch",
-      "program": "${workspaceFolder}/.build/debug/Notepad",
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "NOTEPAD_OPEN": "${file}",
-        "NOTEPAD_SNAPSHOT": "${workspaceFolder}/.build/snapshot.png"
-      },
-      "preLaunchTask": "Build (debug)"
+      "target": "Notepad",
+      "configuration": "debug",
+      "args": [],
+      "cwd": "${workspaceFolder:notepad}",
+      "env": { "NOTEPAD_OPEN": "${file}" },
+      "preLaunchTask": "swift: Build Debug Notepad"
+    },
+    {
+      "name": "Release Notepad",
+      "type": "swift",
+      "request": "launch",
+      "target": "Notepad",
+      "configuration": "release",
+      "args": [],
+      "cwd": "${workspaceFolder:notepad}",
+      "preLaunchTask": "swift: Build Release Notepad"
     }
   ]
 }

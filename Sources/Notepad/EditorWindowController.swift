@@ -24,6 +24,7 @@ final class EditorWindowController: NSWindowController, NSWindowDelegate, NSText
         window.minSize = NSSize(width: 320, height: 200)
         window.tabbingMode = .disallowed
         window.isReleasedWhenClosed = false
+        window.isRestorable = false   // always start with a fresh, empty Untitled window
         super.init(window: window)
         window.delegate = self
         placeWindow(window)
@@ -102,6 +103,7 @@ final class EditorWindowController: NSWindowController, NSWindowDelegate, NSText
 
         gutter = LineNumberView(textView: tv)
         statusBar = StatusBarView()
+        statusBar.onClick = { [weak self] field, view in self?.showStatusMenu(field, from: view) }
         content.addSubview(gutter)
         content.addSubview(scrollView)
         content.addSubview(statusBar)
@@ -139,6 +141,7 @@ final class EditorWindowController: NSWindowController, NSWindowDelegate, NSText
         layoutManager.showsInvisibles = Settings.showInvisibles
         applyBaseAttributes(font: font)
         applyWrap(Settings.wordWrap)
+        textView.columnGuide = Settings.columnGuide
 
         gutter.editorFont = font
         gutter.font = .monospacedDigitSystemFont(ofSize: max(9, (font.pointSize * 0.85).rounded()), weight: .regular)
@@ -312,6 +315,18 @@ final class EditorWindowController: NSWindowController, NSWindowDelegate, NSText
     @objc func changeLanguage(_ sender: NSMenuItem) {
         guard let raw = sender.representedObject as? String, let language = Language(rawValue: raw) else { return }
         textDocument?.setLanguage(language)
+    }
+
+    private func showStatusMenu(_ field: StatusBarView.Field, from view: NSView) {
+        let menu: NSMenu
+        switch field {
+        case .language: menu = FormatMenus.menu("Syntax", FormatMenus.languageItems(target: self))
+        case .lineEnding: menu = FormatMenus.menu("Line Endings", FormatMenus.lineEndingItems(target: self))
+        case .encoding: menu = FormatMenus.menu("Encoding", FormatMenus.encodingItems(target: self))
+        }
+        menu.items.forEach { _ = validateMenuItem($0) }
+        let checked = menu.items.first { $0.state == .on }
+        menu.popUp(positioning: checked, at: NSPoint(x: 0, y: view.isFlipped ? view.bounds.height : 0), in: view)
     }
 
     @objc func goToLine(_ sender: Any?) {
