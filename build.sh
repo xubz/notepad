@@ -24,7 +24,14 @@ mkdir -p "$BUNDLE/Contents/MacOS" "$BUNDLE/Contents/Resources"
 cp ".build/release/${APP}" "$BUNDLE/Contents/MacOS/"
 cp "$ICON" "$BUNDLE/Contents/Resources/AppIcon.icns"
 cp Resources/Info.plist "$BUNDLE/Contents/Info.plist"
-codesign --force --sign - "$BUNDLE" >/dev/null 2>&1
+# Ad-hoc signed by default. Set SIGN_IDENTITY (e.g. "Developer ID Application: …")
+# to sign for distribution with the hardened runtime and a secure timestamp.
+if [ -n "${SIGN_IDENTITY:-}" ]; then
+  echo "▸ Signing with ${SIGN_IDENTITY}…"
+  codesign --force --options runtime --timestamp --sign "$SIGN_IDENTITY" "$BUNDLE"
+else
+  codesign --force --sign - "$BUNDLE" >/dev/null 2>&1
+fi
 
 echo "✓ Built ${BUNDLE} ($(du -sh "$BUNDLE" | cut -f1))"
 
