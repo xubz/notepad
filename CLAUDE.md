@@ -15,6 +15,7 @@ The feature set is deliberately limited to: New/Open/Save/Save As/Close/Exit, Fi
 - Headless self-check (DEBUG builds only, see `DebugSnapshot.swift`):
   `NOTEPAD_OPEN=<file> NOTEPAD_SNAPSHOT=<out.png> [NOTEPAD_APPEARANCE=dark|light] [NOTEPAD_SAVE_TO=<file>] .build/debug/Notepad`
   This opens the file, renders the window to a PNG (no screen-recording permission needed), optionally saves a copy, then quits. With only `NOTEPAD_OPEN` set, the app opens the file and keeps running (that's what `.vscode/launch.json` uses).
+- README screenshots (`docs/screenshot-light.png`, `docs/screenshot-dark.png`) are made with the snapshot hook at a fixed size: add `-"NSWindow Frame NotepadWindow" "200 200 720 440 0 0 1920 1080" -columnGuide 80` to the command above, once per appearance.
 - When launched directly (debugger or Terminal, not Finder or `open`), AppKit makes no Untitled window by itself; `AppDelegate` creates one if no document is open. Use it to check UI changes visually, and use `cmp` on the saved copy to confirm files round-trip byte-for-byte.
 
 ## Architecture (Sources/Notepad)

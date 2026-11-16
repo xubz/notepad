@@ -8,6 +8,10 @@ Derived from [LiteEdit](https://github.com/arietan/lite-edit) (MIT): the syntax 
 
 > **Heads up: this is vibe coded.** It was written mostly by an AI coding assistant, with me steering and testing it for my own daily use. It works for me, but it hasn't been audited or battle-tested. Use it at your own risk, keep backups of anything important, and see the [LICENSE](LICENSE): no warranty of any kind.
 
+| Light | Dark |
+|---|---|
+| ![Notepad in light mode, editing a Python file with syntax highlighting, visible whitespace and an 80-column guide](docs/screenshot-light.png) | ![Notepad in dark mode, same file](docs/screenshot-dark.png) |
+
 ## Download
 
 Grab `Notepad-<version>.zip` from the [latest release](https://github.com/xubz/notepad/releases/latest), unzip it, and drag `Notepad.app` to `/Applications`. It's signed with a Developer ID and notarized by Apple, so it opens normally. Requires macOS 13+ on Apple Silicon.
