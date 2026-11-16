@@ -1,6 +1,8 @@
 # Notepad
 
-A plain, Windows XP Notepad–style text editor for macOS: one window per file, no tabs, no sidebar, no project anything. Native Swift/AppKit, no dependencies, ~600 KB app.
+A plain, Windows XP Notepad–style text editor for macOS: one window per file, no tabs, no sidebar, no project anything. Native Swift/AppKit, no dependencies, ~700 KB app.
+
+**Why?** Years of muscle memory: hit the Start menu, type "notepad", press Enter. On a Mac that became ⌘Space, "notepad", Enter, and nothing useful came up. Now something does.
 
 Derived from [LiteEdit](https://github.com/arietan/lite-edit) (MIT): the syntax highlighter and line-number gutter started there. Everything else was stripped out.
 
@@ -8,13 +10,7 @@ Derived from [LiteEdit](https://github.com/arietan/lite-edit) (MIT): the syntax 
 
 ## Download
 
-Grab `Notepad.zip` from the [latest release](../../releases/latest), unzip it, and drag `Notepad.app` to `/Applications`.
-
-The app is ad-hoc signed, not notarized, so macOS will block it the first time. Either open **System Settings → Privacy & Security** and click **Open Anyway**, or run:
-
-```sh
-xattr -dr com.apple.quarantine /Applications/Notepad.app
-```
+Grab `Notepad-<version>.zip` from the [latest release](https://github.com/xubz/notepad/releases/latest), unzip it, and drag `Notepad.app` to `/Applications`. It's signed with a Developer ID and notarized by Apple, so it opens normally. Requires macOS 13+ on Apple Silicon.
 
 ## Features
 
@@ -25,7 +21,7 @@ xattr -dr com.apple.quarantine /Applications/Notepad.app
 - **Status bar:** `Ln, Col`, plus clickable Syntax, Line Ending and Encoding fields that change them directly
 - **Always starts empty:** launching opens a blank Untitled window and never restores last session's files
 - **Syntax highlighting** with the Tango palette, following system Light/Dark mode. Languages: C/C++, CSS, Go, HTML, INI, Java, JS/TS, JSON, Markdown, Python, Ruby, Rust, Shell, SQL, Swift, TOML, XML, YAML. Detected from the file extension or shebang line.
-- **Files are saved exactly as they came in.** The line endings (LF / CRLF / CR) and encoding (UTF-8, UTF-8 BOM, UTF-16 LE/BE, Windows-1252, Latin-1) are detected on open and kept on save. You can convert either from the Format menu.
+- **Files are saved exactly as they came in.** The line endings (LF / CRLF / CR) and encoding (UTF-8, UTF-8 BOM, UTF-16 LE/BE, Windows-1252, Latin-1) are detected on open and kept on save. You can convert either from the Format menu. Files with *mixed* line endings show `(mixed)` in the status bar and are saved with the most common one. Pasted text is converted to the file's line ending.
 - **Visible whitespace:** `·` space, `→` tab, `°` non-breaking space, and a faint `LF`/`CRLF`/`CR` tag at each line end.
 
 ## Build
@@ -33,9 +29,16 @@ xattr -dr com.apple.quarantine /Applications/Notepad.app
 Requires macOS 13+ and Swift 5.9+ (Xcode or the Command Line Tools).
 
 ```sh
-./build.sh            # builds Notepad.app in this folder
+./build.sh            # builds builds/<version>/Notepad.app (version from Resources/Info.plist)
 ./build.sh --install  # …and copies it to /Applications
-open Notepad.app
+open builds/1.0/Notepad.app
+```
+
+Local builds are ad-hoc signed. To build a signed, notarized release zip (needs a Developer ID certificate and a `notarytool store-credentials` profile):
+
+```sh
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" NOTARY_PROFILE=notary ./build.sh
+# → builds/<version>/Notepad.app and builds/<version>/Notepad-<version>.zip
 ```
 
 ## Shortcuts
