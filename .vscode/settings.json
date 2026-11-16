@@ -1,0 +1,4 @@
+{
+  "files.exclude": { ".build": true, "*.app": true },
+  "search.exclude": { ".build": true }
+}

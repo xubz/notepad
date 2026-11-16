@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Notepad",
+      "type": "swift",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/debug/Notepad",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "Build (debug)"
+    },
+    {
+      "name": "Debug Notepad (open a file)",
+      "type": "swift",
+      "request": "launch",
+      "program": "${workspaceFolder}/.build/debug/Notepad",
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "NOTEPAD_OPEN": "${file}",
+        "NOTEPAD_SNAPSHOT": "${workspaceFolder}/.build/snapshot.png"
+      },
+      "preLaunchTask": "Build (debug)"
+    }
+  ]
+}

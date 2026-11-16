@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key>                  <string>Notepad</string>
+  <key>CFBundleDisplayName</key>           <string>Notepad</string>
+  <key>CFBundleIdentifier</key>            <string>com.personal.notepad</string>
+  <key>CFBundleExecutable</key>            <string>Notepad</string>
+  <key>CFBundlePackageType</key>           <string>APPL</string>
+  <key>CFBundleVersion</key>               <string>1</string>
+  <key>CFBundleShortVersionString</key>    <string>1.0</string>
+  <key>CFBundleInfoDictionaryVersion</key> <string>6.0</string>
+  <key>CFBundleIconFile</key>              <string>AppIcon</string>
+  <key>NSPrincipalClass</key>              <string>NSApplication</string>
+  <key>NSHighResolutionCapable</key>       <true/>
+  <key>LSMinimumSystemVersion</key>        <string>13.0</string>
+  <key>LSApplicationCategoryType</key>     <string>public.app-category.productivity</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeName</key>  <string>Text Document</string>
+      <key>CFBundleTypeRole</key>  <string>Editor</string>
+      <key>LSHandlerRank</key>     <string>Alternate</string>
+      <key>NSDocumentClass</key>   <string>TextDocument</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.plain-text</string>
+        <string>public.text</string>
+        <string>public.source-code</string>
+        <string>public.data</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>
